@@ -51,9 +51,8 @@ const buildArticle = ([title, category, description, thumbnail, tags, likes, vie
   isPublished: true
 });
 
-const seedAdmin = async () => {
-  await connectDB();
-
+export const seedDatabase = async ({ connect = false } = {}) => {
+  if (connect) await connectDB();
   const email = process.env.ADMIN_EMAIL || "admin@careercoded.com";
   const existing = await User.findOne({ email });
 
@@ -81,10 +80,16 @@ const seedAdmin = async () => {
   }
 
   console.log(`Seeded ${inserted} new 2026 CareerCoded blogs.`);
-  process.exit(0);
+  return { inserted };
 };
 
-seedAdmin().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+const isCliRun = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, "/"));
+
+if (isCliRun) {
+  seedDatabase({ connect: true })
+    .then(() => process.exit(0))
+    .catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
+}

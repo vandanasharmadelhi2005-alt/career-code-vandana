@@ -10,6 +10,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
+import { seedDatabase } from "./utils/seedAdmin.js";
 
 dotenv.config();
 
@@ -60,6 +61,9 @@ app.listen(port, () => {
   connectDB()
     .then(() => {
       isDatabaseConnected = true;
+      if (process.env.SEED_ON_START !== "false") {
+        return seedDatabase();
+      }
     })
     .catch((error) => {
       isDatabaseConnected = false;
