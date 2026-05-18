@@ -49,6 +49,8 @@ ADMIN_PASSWORD=use-a-strong-admin-password
 VITE_API_URL=/api
 ```
 
+If you attach Railway's MongoDB plugin, Railway may create `MONGO_URL` or `DATABASE_URL` instead. The backend now supports `MONGO_URI`, `MONGO_URL`, and `DATABASE_URL`.
+
 5. Deploy. After deployment, open the Railway shell and seed admin:
 
 ```bash
