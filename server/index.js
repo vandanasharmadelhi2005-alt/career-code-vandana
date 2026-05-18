@@ -19,6 +19,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const clientDistPath = path.resolve(__dirname, "../client/dist");
 const clientIndexPath = path.join(clientDistPath, "index.html");
+let isDatabaseConnected = false;
 
 app.use(helmet());
 app.use(cors());
@@ -26,7 +27,17 @@ app.use(express.json({ limit: "1mb" }));
 app.use(morgan("dev"));
 
 app.get("/api/health", (_req, res) => {
-  res.json({ message: "CareerCoded Blog API is running." });
+  res.json({
+    message: "CareerCoded Blog API is running.",
+    database: isDatabaseConnected ? "connected" : "disconnected"
+  });
+});
+
+app.use("/api", (req, res, next) => {
+  if (req.path === "/health" || isDatabaseConnected) return next();
+  return res.status(503).json({
+    message: "Database is not connected yet. Check MongoDB environment variables in Railway."
+  });
 });
 
 app.use("/api/auth", authRoutes);
@@ -44,11 +55,14 @@ app.get("*", (_req, res, next) => {
 app.use(notFound);
 app.use(errorHandler);
 
-connectDB()
-  .then(() => {
-    app.listen(port, () => console.log(`Server running on port ${port}`));
-  })
-  .catch((error) => {
-    console.error("Failed to start server:", error.message);
-    process.exit(1);
-  });
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+  connectDB()
+    .then(() => {
+      isDatabaseConnected = true;
+    })
+    .catch((error) => {
+      isDatabaseConnected = false;
+      console.error("MongoDB connection failed:", error.message);
+    });
+});
