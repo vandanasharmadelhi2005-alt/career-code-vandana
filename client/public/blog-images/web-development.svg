@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#eef2ff"/>
+  <rect x="130" y="150" width="940" height="540" rx="36" fill="#1e3a8a"/>
+  <rect x="180" y="220" width="840" height="390" rx="22" fill="#fff"/>
+  <rect x="230" y="280" width="330" height="250" rx="20" fill="#dbeafe"/>
+  <rect x="610" y="280" width="360" height="48" rx="12" fill="#8b5cf6"/><rect x="610" y="365" width="290" height="34" rx="10" fill="#93c5fd"/><rect x="610" y="430" width="330" height="34" rx="10" fill="#bfdbfe"/>
+  <text x="80" y="105" fill="#1e3a8a" font-family="Inter,Arial" font-size="54" font-weight="800">Web Development</text>
+</svg>

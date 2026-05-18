@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#08111f"/>
+  <rect x="90" y="130" width="1020" height="560" rx="36" fill="#0f172a" stroke="#334155" stroke-width="8"/>
+  <circle cx="145" cy="185" r="16" fill="#ef4444"/><circle cx="195" cy="185" r="16" fill="#f59e0b"/><circle cx="245" cy="185" r="16" fill="#22c55e"/>
+  <text x="150" y="310" fill="#60a5fa" font-family="Consolas,monospace" font-size="46">&lt;code&gt;</text>
+  <text x="230" y="405" fill="#fff" font-family="Consolas,monospace" font-size="42">const roadmap = learn + build;</text>
+  <text x="150" y="520" fill="#a78bfa" font-family="Consolas,monospace" font-size="46">&lt;/code&gt;</text>
+  <text x="80" y="90" fill="#fff" font-family="Inter,Arial" font-size="54" font-weight="800">Programming Roadmap</text>
+</svg>

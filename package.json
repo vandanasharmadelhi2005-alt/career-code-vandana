@@ -1,0 +1,19 @@
+{
+  "name": "careercoded-blog-management-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-stack CareerCoded blog management system with React, Express, MongoDB, JWT auth, and admin CRUD.",
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "build": "npm run build --prefix client",
+    "postinstall": "npm run install:all",
+    "dev": "npm run build && npm run dev --prefix server",
+    "start": "npm run start --prefix server",
+    "deploy:start": "npm run start --prefix server",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

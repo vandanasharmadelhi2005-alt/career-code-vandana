@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#1e3a8a"/><stop offset="0.55" stop-color="#2563eb"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+  <rect width="1200" height="800" fill="url(#g)"/>
+  <circle cx="940" cy="160" r="150" fill="#ffffff" opacity=".16"/>
+  <circle cx="230" cy="630" r="190" fill="#ffffff" opacity=".1"/>
+  <g fill="none" stroke="#fff" stroke-width="18" opacity=".9">
+    <rect x="350" y="210" width="500" height="330" rx="44"/>
+    <path d="M480 210v-70M720 210v-70M480 610v-70M720 610v-70M350 330h-90M350 430h-90M850 330h90M850 430h90"/>
+    <circle cx="520" cy="370" r="32"/><circle cx="680" cy="370" r="32"/><path d="M510 465c60 45 120 45 180 0"/>
+  </g>
+  <text x="70" y="110" fill="#fff" font-family="Inter,Arial" font-size="54" font-weight="800">AI Tools 2026</text>
+</svg>
