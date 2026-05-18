@@ -26,7 +26,7 @@ VITE_API_URL=/api
 ## Build Settings
 
 ```bash
-Build Command: npm install && npm run build
+Build Command: npm install --include=dev && npm run build
 Start Command: npm run deploy:start
 ```
 
