@@ -5,6 +5,8 @@ import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 
+const getRecordId = (item) => String(item?._id || item?.id || item || "");
+
 const BlogDetails = () => {
   const { id } = useParams();
   const { user, refreshMe } = useAuth();
@@ -14,9 +16,10 @@ const BlogDetails = () => {
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [actionLoading, setActionLoading] = useState("");
 
-  const liked = Boolean(user?.likedBlogs?.some((item) => (item._id || item) === id));
-  const bookmarked = Boolean(user?.bookmarkedBlogs?.some((item) => (item._id || item) === id));
+  const liked = Boolean(user?.likedBlogs?.some((item) => getRecordId(item) === String(id)));
+  const bookmarked = Boolean(user?.bookmarkedBlogs?.some((item) => getRecordId(item) === String(id)));
 
   const loadBlog = async () => {
     setLoading(true);
@@ -43,11 +46,19 @@ const BlogDetails = () => {
       return;
     }
 
-    const endpoint = `/blogs/${id}/${liked ? "unlike" : "like"}`;
-    const method = liked ? "delete" : "post";
-    const { data } = await api[method](endpoint);
-    setBlog((current) => ({ ...current, likes: data.likes }));
-    await refreshMe();
+    setActionLoading("like");
+    setError("");
+    try {
+      const endpoint = `/blogs/${id}/${liked ? "unlike" : "like"}`;
+      const method = liked ? "delete" : "post";
+      const { data } = await api[method](endpoint);
+      setBlog((current) => ({ ...current, likes: data.likes }));
+      await refreshMe();
+    } catch (err) {
+      setError(err.response?.data?.message || "Unable to update like. Please try again.");
+    } finally {
+      setActionLoading("");
+    }
   };
 
   const toggleBookmark = async () => {
@@ -56,10 +67,18 @@ const BlogDetails = () => {
       return;
     }
 
-    const method = bookmarked ? "delete" : "post";
-    const { data } = await api[method](`/blogs/${id}/bookmark`);
-    setBlog((current) => ({ ...current, bookmarks: data.bookmarks }));
-    await refreshMe();
+    setActionLoading("bookmark");
+    setError("");
+    try {
+      const method = bookmarked ? "delete" : "post";
+      const { data } = await api[method](`/blogs/${id}/bookmark`);
+      setBlog((current) => ({ ...current, bookmarks: data.bookmarks }));
+      await refreshMe();
+    } catch (err) {
+      setError(err.response?.data?.message || "Unable to update bookmark. Please try again.");
+    } finally {
+      setActionLoading("");
+    }
   };
 
   const shareBlog = async () => {
@@ -113,13 +132,13 @@ const BlogDetails = () => {
           <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
         </div>
         <div className="article-actions">
-          <button className={liked ? "like-btn liked" : "like-btn"} onClick={toggleLike} type="button">
+          <button className={liked ? "like-btn liked" : "like-btn"} disabled={actionLoading === "like"} onClick={toggleLike} type="button">
             <Heart size={18} fill={liked ? "currentColor" : "none"} />
-            {liked ? "Liked" : "Like"} - {blog.likes}
+            {actionLoading === "like" ? "Updating" : liked ? "Liked" : "Like"} - {blog.likes}
           </button>
-          <button className={bookmarked ? "like-btn liked" : "like-btn"} onClick={toggleBookmark} type="button">
+          <button className={bookmarked ? "like-btn liked" : "like-btn"} disabled={actionLoading === "bookmark"} onClick={toggleBookmark} type="button">
             <Bookmark size={18} fill={bookmarked ? "currentColor" : "none"} />
-            {bookmarked ? "Saved" : "Bookmark"} - {blog.bookmarks || 0}
+            {actionLoading === "bookmark" ? "Updating" : bookmarked ? "Saved" : "Bookmark"} - {blog.bookmarks || 0}
           </button>
           <button className="like-btn" onClick={shareBlog} type="button">
             <Share2 size={18} />

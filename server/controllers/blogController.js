@@ -10,6 +10,8 @@ const toTags = (tags) => {
   return [];
 };
 
+const sameId = (value, target) => String(value?._id || value) === String(target?._id || target);
+
 const blogPayload = (body) => ({
   title: body.title,
   thumbnail: body.thumbnail,
@@ -173,7 +175,7 @@ export const bookmarkBlog = asyncHandler(async (req, res) => {
   const blog = await Blog.findById(req.params.id);
   if (!blog || !blog.isPublished) throw new ApiError(404, "Blog not found.");
 
-  const bookmarked = req.user.bookmarkedBlogs.some((id) => id.equals(blog._id));
+  const bookmarked = req.user.bookmarkedBlogs.some((id) => sameId(id, blog._id));
   if (!bookmarked) {
     req.user.bookmarkedBlogs.push(blog._id);
     blog.bookmarks += 1;
@@ -187,8 +189,8 @@ export const unbookmarkBlog = asyncHandler(async (req, res) => {
   const blog = await Blog.findById(req.params.id);
   if (!blog) throw new ApiError(404, "Blog not found.");
 
-  const hadBookmark = req.user.bookmarkedBlogs.some((id) => id.equals(blog._id));
-  req.user.bookmarkedBlogs = req.user.bookmarkedBlogs.filter((id) => !id.equals(blog._id));
+  const hadBookmark = req.user.bookmarkedBlogs.some((id) => sameId(id, blog._id));
+  req.user.bookmarkedBlogs = req.user.bookmarkedBlogs.filter((id) => !sameId(id, blog._id));
   if (hadBookmark) blog.bookmarks = Math.max(blog.bookmarks - 1, 0);
   await Promise.all([req.user.save(), blog.save()]);
 
@@ -219,10 +221,12 @@ export const likeBlog = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Blog not found.");
   }
 
-  const alreadyLiked = req.user.likedBlogs.some((id) => id.equals(blog._id));
+  const alreadyLiked = req.user.likedBlogs.some((id) => sameId(id, blog._id));
   if (!alreadyLiked) {
     req.user.likedBlogs.push(blog._id);
-    blog.likedBy.push(req.user._id);
+    if (!blog.likedBy.some((id) => sameId(id, req.user._id))) {
+      blog.likedBy.push(req.user._id);
+    }
     blog.likes = blog.likedBy.length;
     await Promise.all([req.user.save(), blog.save()]);
   }
@@ -237,8 +241,8 @@ export const unlikeBlog = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Blog not found.");
   }
 
-  req.user.likedBlogs = req.user.likedBlogs.filter((id) => !id.equals(blog._id));
-  blog.likedBy = blog.likedBy.filter((id) => !id.equals(req.user._id));
+  req.user.likedBlogs = req.user.likedBlogs.filter((id) => !sameId(id, blog._id));
+  blog.likedBy = blog.likedBy.filter((id) => !sameId(id, req.user._id));
   blog.likes = blog.likedBy.length;
 
   await Promise.all([req.user.save(), blog.save()]);
